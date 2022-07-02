@@ -1,55 +1,79 @@
 #include<stdio.h>
- 
-void main()
+int main()
 {
-int m_size[10], p_size[10], m, n, flags[10], allocation[10], i, j;
- 
-for(i = 0; i < 10; i++)
+int n,n1,i;
+printf("enter the number of processes:");
+scanf("%d",&n);
+int process[n];
+printf("\n enter the size of processes:\n");
+for(i=0;i<n;i++)
 {
-flags[i] = 0;
-allocation[i] = -1;
+scanf("%d",&process[i]);
 }
-printf("Enter no. of memory partitions : ");
-scanf("%d", &m);
-printf("\nEnter size of each partitions : ");
-for(i = 0; i < m; i++)
-scanf("%d", &m_size[i]);
- 
-printf("\nEnter no. of processes : ");
-scanf("%d", &n);
-printf("\nEnter size of each process : ");
-for(i = 0; i < n; i++)
-scanf("%d", &p_size[i]);
-
-   int temp;  
-   for(int i = 0; i < n; i++)    
-    {    
-      for(int j = i+1; j < n; j++)    
-        {    
-            if(m_size[j] < m_size[i])    
-            {    
-                temp = m_size[i];    
-                m_size[i] = m_size[j];    
-                m_size[j] = temp;     
-            }     
-        }     
-    } 
-
-for(i = 0; i < n; i++)        
-for(j = 0; j < m; j++)
-if(flags[j] == 0 && m_size[j] >= p_size[i])
+printf("enter the no of memoryblocks:");
+scanf("%d",&n1);
+int blocks[n1];
+printf("\n enter the size of blocks:\n");
+int total=0;
+for(i=0;i<n1;i++)
 {
-allocation[j] = i;
-flags[j] = 1;
-break;
+scanf("%d",&blocks[i]);
+total=total+blocks[i];
 }
-printf("\nPartition no.\tM_size\t\tProcess_no.\t\tProcess_size\n");
-for(i = 0; i < m; i++)
+int process1[n1];
+int job[n1];
+int frag[n1];
+int check[n1];
+for(i=0;i<n1;i++)
 {
-printf("\n%d\t\t%d\t\t", i+1, m_size[i]);
-if(flags[i] == 1)
-printf("%d\t\t\t%d\n",allocation[i]+1,p_size[allocation[i]]);
+check[i]=0;
+}
+int j,used=0;
+i=0;
+while(i<n)
+{
+int max=-1,j1=-1,k=-1,max1;
+for(j=0;j<n1;j++)
+{
+max1=blocks[j];
+if(max1>=max&&check[j]==0&&max1>=process[i])
+{
+max=max1;
+j1=j;
+}
 else
-printf("Not allocated");
+{
+if(check[j]==0)
+{
+process1[j]=0;
+job[j]=0;
+frag[j]=blocks[j];
 }
+}
+}
+if(k!=j1)
+{
+process1[j1]=process[i];
+job[j1]=i+1;
+frag[j1]=blocks[j1]-process[i];
+used=used+process[i];
+check[j1]=1;
+int l;
+}
+i++;
+}
+printf("blocksize\tprocess size\tprocessno\tfragmentation\n");
+for(i=0;i<n1;i++)
+{
+if(job[i]==0)
+{
+printf("%d\t\t%d\t\tNot allocated\t\t\n",blocks[i],process1[i]);
+}
+else
+{
+printf("%d\t\t%d\t\t%d\t\t%d\n",blocks[i],process1[i],job[i],frag[i]);
+}
+}
+printf("totalmemoryallocation:%d\n",total);
+printf("memoryused:%d\n",used);
 }
